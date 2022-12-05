@@ -381,3 +381,29 @@ plot(fitted(lm1),res)
 
 #https://towardsdatascience.com/mahalonobis-distance-and-outlier-detection-in-r-cb9c37576d7d
 #https://www.r-bloggers.com/2021/08/how-to-calculate-mahalanobis-distance-in-r/
+
+#standardised residuals
+res <- rstandard(lm1)
+res
+df_res <- data.frame(res) #only one case exceeds +/- 3 therefore safe
+boxplot(rstandard(lm1))
+
+#Cook's distance for influence
+cooks <- data.frame(cooks.distance(lm1)) #max < 1 therefore safe
+boxplot(cooks.distance(lm1))
+
+##########
+
+#semi-partial correlation
+library(ppcor)
+library(tidyverse)
+df <- survey %>% drop_na(tpcoiss, tpstress, tmast) %>% select(tpcoiss, tpstress, tmast)
+data.frame(df)
+
+pcor.test(df$tpstress,  df$tmast, df$tpcoiss)
+
+spcor.test(df$tpstress,  df$tmast, df$tpcoiss)
+spcor.test(df$tpstress,  df$tpcoiss, df$tmast)
+
+#semi-partial correlation -- Total variance 
+#partial correlation -- controlled for other correlates
